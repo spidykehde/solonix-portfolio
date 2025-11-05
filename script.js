@@ -40,23 +40,21 @@ let isDragging = false;
 let startX;
 let scrollLeft;
 
-const NORMAL_SPEED = 1; // default auto-scroll speed
-let currentSpeed = NORMAL_SPEED;
+const NORMAL_SPEED = 1; // default speed
+let requestId;
 
 // Auto-scroll function
 function autoScroll() {
   if (!isDragging) {
-    autoScrollContainer.scrollLeft += currentSpeed;
-    // Loop back
+    autoScrollContainer.scrollLeft += NORMAL_SPEED;
     if (autoScrollContainer.scrollLeft >= autoScrollInner.scrollWidth / 2) {
       autoScrollContainer.scrollLeft = 0;
     }
-    currentSpeed = NORMAL_SPEED; // reset speed after drag
   }
-  requestAnimationFrame(autoScroll);
+  requestId = requestAnimationFrame(autoScroll);
 }
 
-autoScroll();
+autoScroll(); // start auto-scroll
 
 // ---------------- DRAG / SWIPE ----------------
 function startDrag(xPos) {
@@ -73,7 +71,6 @@ function moveDrag(xPos) {
 
 function endDrag() {
   isDragging = false;
-  currentSpeed = NORMAL_SPEED; // reset auto-scroll speed immediately
 }
 
 // Mouse events
