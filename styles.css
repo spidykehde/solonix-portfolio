@@ -70,8 +70,8 @@ nav a:hover {
 
 /* typing cursor effect */
 @keyframes typing {
-  from { width: 0; }
-  to { width: 100%; }
+  from { width: 0 }
+  to { width: 100% }
 }
 
 .hero p {
@@ -150,23 +150,47 @@ nav a:hover {
 .auto-scroll {
   overflow: hidden;
   width: 100%;
-  position: relative;
   cursor: grab;
+  -webkit-overflow-scrolling: touch; /* Smooth momentum on mobile */
 }
 
 .auto-scroll-inner {
   display: flex;
   gap: 20px;
-  animation: scroll-left 30s linear infinite;
+  animation: scroll-left 40s linear infinite;
+  scroll-behavior: smooth; /* smooth manual scroll */
+}
+
+.auto-scroll-inner .image-wrapper {
+  position: relative;
+}
+
+.auto-scroll-inner .image-wrapper span {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  background: rgba(0,0,0,0.6);
+  padding: 4px 8px;
+  border-radius: 6px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.9rem;
+}
+
+.auto-scroll-inner .image-wrapper:hover span {
+  opacity: 1;
 }
 
 .auto-scroll-inner img {
   border-radius: 12px;
   height: 180px;
   object-fit: cover;
-  flex-shrink: 0;
+  flex-shrink: 0; /* prevents shrinking while dragging */
 }
 
+/* Keyframes for auto scroll */
 @keyframes scroll-left {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
