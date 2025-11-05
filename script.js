@@ -25,7 +25,7 @@ function type() {
 
 type();
 
-// ---------------------- AUTO SCROLL & DYNAMIC SWIPE ----------------------
+// ---------------------- AUTO SCROLL & SWIPE ----------------------
 const autoScrollContainer = document.querySelector('.auto-scroll');
 const autoScrollInner = document.querySelector('.auto-scroll-inner');
 
@@ -39,50 +39,58 @@ thumbnails.forEach(item => {
 let isDragging = false;
 let startX;
 let scrollLeft;
-let velocity = 1; // initial auto-scroll speed
 
+// Function to auto-scroll smoothly
 function autoScroll() {
   if (!isDragging) {
-    autoScrollContainer.scrollLeft += velocity; // scroll based on velocity
+    autoScrollContainer.scrollLeft += 1; // speed
     // Loop back when reaching the end of original items
     if (autoScrollContainer.scrollLeft >= autoScrollInner.scrollWidth / 2) {
       autoScrollContainer.scrollLeft = 0;
     }
-    // Gradually reset velocity to normal speed
-    if (velocity > 1) velocity -= 0.05;
-    if (velocity < 1) velocity = 1;
   }
   requestAnimationFrame(autoScroll);
 }
 
 autoScroll();
 
-// ---------------------- DRAG / SWIPE ----------------------
-function startDrag(xPos) {
+// Drag functionality
+autoScrollContainer.addEventListener('mousedown', (e) => {
   isDragging = true;
-  startX = xPos - autoScrollContainer.offsetLeft;
+  startX = e.pageX - autoScrollContainer.offsetLeft;
   scrollLeft = autoScrollContainer.scrollLeft;
-}
+});
 
-function moveDrag(xPos) {
-  if (!isDragging) return;
-  const walk = (xPos - startX); 
-  autoScrollContainer.scrollLeft = scrollLeft - walk;
-  // Update velocity dynamically based on swipe speed
-  velocity = Math.min(Math.abs(walk) / 5, 20); // max speed cap
-}
-
-function endDrag() {
+autoScrollContainer.addEventListener('mouseleave', () => {
   isDragging = false;
-}
+});
 
-// Mouse events
-autoScrollContainer.addEventListener('mousedown', (e) => startDrag(e.pageX));
-autoScrollContainer.addEventListener('mousemove', (e) => moveDrag(e.pageX));
-autoScrollContainer.addEventListener('mouseup', endDrag);
-autoScrollContainer.addEventListener('mouseleave', endDrag);
+autoScrollContainer.addEventListener('mouseup', () => {
+  isDragging = false;
+});
 
-// Touch events
-autoScrollContainer.addEventListener('touchstart', (e) => startDrag(e.touches[0].pageX));
-autoScrollContainer.addEventListener('touchmove', (e) => moveDrag(e.touches[0].pageX));
-autoScrollContainer.addEventListener('touchend', endDrag);
+autoScrollContainer.addEventListener('mousemove', (e) => {
+  if(!isDragging) return;
+  e.preventDefault();
+  const x = e.pageX - autoScrollContainer.offsetLeft;
+  const walk = (x - startX) * 2; // scroll speed on drag
+  autoScrollContainer.scrollLeft = scrollLeft - walk;
+});
+
+// Touch events for mobile
+autoScrollContainer.addEventListener('touchstart', (e) => {
+  isDragging = true;
+  startX = e.touches[0].pageX - autoScrollContainer.offsetLeft;
+  scrollLeft = autoScrollContainer.scrollLeft;
+});
+
+autoScrollContainer.addEventListener('touchend', () => {
+  isDragging = false;
+});
+
+autoScrollContainer.addEventListener('touchmove', (e) => {
+  if(!isDragging) return;
+  const x = e.touches[0].pageX - autoScrollContainer.offsetLeft;
+  const walk = (x - startX) * 2; // scroll-fast
+  autoScrollContainer.scrollLeft = scrollLeft - walk;
+});
