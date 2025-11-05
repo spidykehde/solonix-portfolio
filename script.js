@@ -26,60 +26,66 @@ function type() {
 type();
 
 // ---------------------- AUTO SCROLL & SWIPE ----------------------
-const autoScrollContainer = document.querySelector('.auto-scroll');
-const autoScrollInner = document.querySelector('.auto-scroll-inner');
+const container = document.querySelector('.auto-scroll');
+const inner = document.querySelector('.auto-scroll-inner');
 
-// Clone thumbnails for seamless infinite scroll
-const thumbnails = Array.from(autoScrollInner.children);
-thumbnails.forEach(item => {
-  const clone = item.cloneNode(true);
-  autoScrollInner.appendChild(clone);
+// Clone for infinite scroll
+Array.from(inner.children).forEach(child => {
+  inner.appendChild(child.cloneNode(true));
 });
 
 let isDragging = false;
 let startX;
-let scrollLeft;
+let scrollStart;
+let velocity = 0; // for momentum
+const AUTO_SPEED = 0.5; // slow auto-scroll
+let resumeTimeout;
 
-const NORMAL_SPEED = 1; // default speed
-let requestId;
-
-// Auto-scroll function
-function autoScroll() {
+// Animate function
+function animate() {
   if (!isDragging) {
-    autoScrollContainer.scrollLeft += NORMAL_SPEED;
-    if (autoScrollContainer.scrollLeft >= autoScrollInner.scrollWidth / 2) {
-      autoScrollContainer.scrollLeft = 0;
+    container.scrollLeft += AUTO_SPEED + velocity;
+    velocity *= 0.95; // decay momentum
+    if (container.scrollLeft >= inner.scrollWidth / 2) {
+      container.scrollLeft -= inner.scrollWidth / 2;
     }
   }
-  requestId = requestAnimationFrame(autoScroll);
+  requestAnimationFrame(animate);
 }
 
-autoScroll(); // start auto-scroll
+animate();
 
-// ---------------- DRAG / SWIPE ----------------
-function startDrag(xPos) {
+// ---------------------- DRAG / SWIPE ----------------------
+function pointerDown(x) {
   isDragging = true;
-  startX = xPos - autoScrollContainer.offsetLeft;
-  scrollLeft = autoScrollContainer.scrollLeft;
+  startX = x;
+  scrollStart = container.scrollLeft;
+  velocity = 0;
+  if (resumeTimeout) clearTimeout(resumeTimeout); // cancel resume timer
 }
 
-function moveDrag(xPos) {
+function pointerMove(x) {
   if (!isDragging) return;
-  const walk = xPos - startX;
-  autoScrollContainer.scrollLeft = scrollLeft - walk;
+  const dx = x - startX;
+  container.scrollLeft = scrollStart - dx;
+  velocity = -dx * 0.05; // set momentum based on drag speed
 }
 
-function endDrag() {
+function pointerUp() {
   isDragging = false;
+  // Resume auto-scroll after 0.7s
+  resumeTimeout = setTimeout(() => {
+    isDragging = false;
+  }, 700);
 }
 
-// Mouse events
-autoScrollContainer.addEventListener('mousedown', (e) => startDrag(e.pageX));
-autoScrollContainer.addEventListener('mousemove', (e) => moveDrag(e.pageX));
-autoScrollContainer.addEventListener('mouseup', endDrag);
-autoScrollContainer.addEventListener('mouseleave', endDrag);
+// Mouse
+container.addEventListener('mousedown', e => pointerDown(e.pageX));
+container.addEventListener('mousemove', e => pointerMove(e.pageX));
+container.addEventListener('mouseup', pointerUp);
+container.addEventListener('mouseleave', pointerUp);
 
-// Touch events
-autoScrollContainer.addEventListener('touchstart', (e) => startDrag(e.touches[0].pageX));
-autoScrollContainer.addEventListener('touchmove', (e) => moveDrag(e.touches[0].pageX));
-autoScrollContainer.addEventListener('touchend', endDrag);
+// Touch
+container.addEventListener('touchstart', e => pointerDown(e.touches[0].pageX));
+container.addEventListener('touchmove', e => pointerMove(e.touches[0].pageX));
+container.addEventListener('touchend', pointerUp);
