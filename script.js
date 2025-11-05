@@ -13,7 +13,7 @@ fadeElements.forEach(el => observer.observe(el));
 
 // Hero typing animation
 const heroName = document.getElementById('hero-name');
-const text = 'Hi, I’m Solonix';
+const text = ' Solonix';
 let index = 0;
 
 function type() {
