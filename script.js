@@ -25,12 +25,13 @@ function typeHero() {
 
 typeHero();
 
-// Auto-scroll thumbnails with swipe
+// Auto-scroll thumbnails with drag/swipe
 const autoScroll = document.querySelector('.auto-scroll-inner');
 let isDown = false;
-let startX;
-let scrollLeft;
+let startX = 0;
+let scrollLeft = 0;
 
+// -------- DESKTOP EVENTS --------
 autoScroll.addEventListener('mousedown', (e) => {
   isDown = true;
   autoScroll.style.cursor = 'grabbing';
@@ -52,6 +53,22 @@ autoScroll.addEventListener('mousemove', (e) => {
   if(!isDown) return;
   e.preventDefault();
   const x = e.pageX - autoScroll.offsetLeft;
-  const walk = (x - startX) * 2; // scroll-fast multiplier
+  const walk = (x - startX) * 2; // scroll speed multiplier
   autoScroll.scrollLeft = scrollLeft - walk;
+});
+
+// -------- MOBILE TOUCH EVENTS --------
+let touchStartX = 0;
+let touchScrollLeft = 0;
+
+autoScroll.addEventListener('touchstart', (e) => {
+  touchStartX = e.touches[0].pageX - autoScroll.offsetLeft;
+  touchScrollLeft = autoScroll.scrollLeft;
+});
+
+autoScroll.addEventListener('touchmove', (e) => {
+  e.preventDefault();
+  const x = e.touches[0].pageX - autoScroll.offsetLeft;
+  const walk = (x - touchStartX) * 2; // same speed multiplier
+  autoScroll.scrollLeft = touchScrollLeft - walk;
 });
