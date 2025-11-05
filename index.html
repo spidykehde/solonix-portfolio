@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solonix Portfolio</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- JS File -->
+  <script defer src="script.js"></script>
+</head>
+<body>
+
+  <header class="fade-in">
+    <div class="logo">Solonix</div>
+    <nav>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#work">My Work</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section id="home" class="hero fade-in">
+    <h1>Hi, I’m <span id="hero-name"></span></h1>
+    <p>Thumbnail, Logo, Banner & Overlay Designer</p>
+    <a href="#work" class="btn">View My Work</a>
+  </section>
+
+  <section id="work" class="portfolio fade-in">
+    <h2>My Work</h2>
+
+    <!-- Thumbnails with infinite scroll -->
+    <h3>Thumbnails</h3>
+    <div class="auto-scroll">
+      <div class="auto-scroll-inner">
+        <div class="image-wrapper"><img src="assets/thumbnails/conqpush.jpeg" alt="Thumbnail - Conq Push"><span>Conq Push</span></div>
+        <div class="image-wrapper"><img src="assets/thumbnails/DRB.jpg" alt="Thumbnail - DRB"><span>DRB</span></div>
+        <div class="image-wrapper"><img src="assets/thumbnails/DRP.jpg" alt="Thumbnail - DRP"><span>DRP</span></div>
+        <div class="image-wrapper"><img src="assets/thumbnails/DRSUB.jpeg" alt="Thumbnail - DRSUB"><span>DRSUB</span></div>
+        <div class="image-wrapper"><img src="assets/thumbnails/labu.jpeg" alt="Thumbnail - Labu"><span>Labu</span></div>
+        <div class="image-wrapper"><img src="assets/thumbnails/supermar.jpg" alt="Thumbnail - Supermar"><span>Supermar</span></div>
+
+        <!-- duplicate for seamless scroll -->
+        <div class="image-wrapper"><img src="assets/thumbnails/conqpush.jpeg" alt="Thumbnail - Conq Push"><span>Conq Push</span></div>
+        <div class="image-wrapper"><img src="assets/thumbnails/DRB.jpg" alt="Thumbnail - DRB"><span>DRB</span></div>
+        <div class="image-wrapper"><img src="assets/thumbnails/DRP.jpg" alt="Thumbnail - DRP"><span>DRP</span></div>
+        <div class="image-wrapper"><img src="assets/thumbnails/DRSUB.jpeg" alt="Thumbnail - DRSUB"><span>DRSUB</span></div>
+        <div class="image-wrapper"><img src="assets/thumbnails/labu.jpeg" alt="Thumbnail - Labu"><span>Labu</span></div>
+        <div class="image-wrapper"><img src="assets/thumbnails/supermar.jpg" alt="Thumbnail - Supermar"><span>Supermar</span></div>
+      </div>
+    </div>
+
+    <!-- Logos -->
+    <h3>Logos</h3>
+    <div class="image-grid fade-in" id="logos">
+      <div class="image-wrapper"><img src="assets/logos/logodr.jpeg" alt="Logo - DR"><span>DR</span></div>
+      <div class="image-wrapper"><img src="assets/logos/sologo.jpeg" alt="Logo - Solo"><span>Solo</span></div>
+    </div>
+
+    <!-- Banners -->
+    <h3>Banners</h3>
+    <div class="image-grid fade-in">
+      <div class="image-wrapper"><img src="assets/banners/banner2.jpeg" alt="Banner - 2"><span>Banner 2</span></div>
+      <div class="image-wrapper"><img src="assets/banners/bannersolo.jpeg" alt="Banner - Solo"><span>Banner Solo</span></div>
+    </div>
+
+    <!-- Overlays -->
+    <h3>Overlays</h3>
+    <div class="image-grid fade-in">
+      <p>No overlays added yet.</p>
+    </div>
+  </section>
+
+  <section id="about" class="fade-in">
+    <h2>About Me</h2>
+    <p>
+      I’m a creative designer passionate about crafting unique visuals for content creators and streamers.
+      Whether it’s thumbnails, logos, banners, or overlays — I design to make your brand stand out!
+    </p>
+  </section>
+
+  <section id="contact" class="fade-in">
+    <h2>Contact</h2>
+    <p>Want to work together or need a design?</p>
+    <div class="contact-icons">
+      <a href="https://www.instagram.com/spideyyyg" target="_blank">
+        <img src="assets/contact/insta.png" alt="Instagram" class="contact-icon">
+      </a>
+      <a href="mailto:solonixcollab@gmail.com">
+        <img src="assets/contact/email.png" alt="Email" class="contact-icon">
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 Solonix. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
