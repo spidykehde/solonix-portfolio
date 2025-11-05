@@ -12,63 +12,77 @@ const observer = new IntersectionObserver((entries) => {
 fadeElements.forEach(el => observer.observe(el));
 
 // Hero typing animation
-const heroElement = document.querySelector('.hero h1');
-const typingText = "Hi, I'm Solonix";
+const heroName = document.getElementById('hero-name');
+const text = 'Hi, I’m Solonix';
 let index = 0;
 
-function typeHero() {
-  heroElement.textContent = typingText.slice(0, index);
+function type() {
+  heroName.textContent = text.slice(0, index);
   index++;
-  if (index > typingText.length) index = 0;
-  setTimeout(typeHero, 200); // slower typing
+  if(index > text.length) index = 0;
+  setTimeout(type, 150); // slowed down
 }
 
-typeHero();
+type();
 
-// Auto-scroll thumbnails with drag/swipe
-const autoScroll = document.querySelector('.auto-scroll-inner');
-let isDown = false;
-let startX = 0;
-let scrollLeft = 0;
+// ---------------------- AUTO SCROLL & DYNAMIC SWIPE ----------------------
+const autoScrollContainer = document.querySelector('.auto-scroll');
+const autoScrollInner = document.querySelector('.auto-scroll-inner');
 
-// -------- DESKTOP EVENTS --------
-autoScroll.addEventListener('mousedown', (e) => {
-  isDown = true;
-  autoScroll.style.cursor = 'grabbing';
-  startX = e.pageX - autoScroll.offsetLeft;
-  scrollLeft = autoScroll.scrollLeft;
+// Clone thumbnails for seamless infinite scroll
+const thumbnails = Array.from(autoScrollInner.children);
+thumbnails.forEach(item => {
+  const clone = item.cloneNode(true);
+  autoScrollInner.appendChild(clone);
 });
 
-autoScroll.addEventListener('mouseleave', () => {
-  isDown = false;
-  autoScroll.style.cursor = 'grab';
-});
+let isDragging = false;
+let startX;
+let scrollLeft;
+let velocity = 1; // initial auto-scroll speed
 
-autoScroll.addEventListener('mouseup', () => {
-  isDown = false;
-  autoScroll.style.cursor = 'grab';
-});
+function autoScroll() {
+  if (!isDragging) {
+    autoScrollContainer.scrollLeft += velocity; // scroll based on velocity
+    // Loop back when reaching the end of original items
+    if (autoScrollContainer.scrollLeft >= autoScrollInner.scrollWidth / 2) {
+      autoScrollContainer.scrollLeft = 0;
+    }
+    // Gradually reset velocity to normal speed
+    if (velocity > 1) velocity -= 0.05;
+    if (velocity < 1) velocity = 1;
+  }
+  requestAnimationFrame(autoScroll);
+}
 
-autoScroll.addEventListener('mousemove', (e) => {
-  if(!isDown) return;
-  e.preventDefault();
-  const x = e.pageX - autoScroll.offsetLeft;
-  const walk = (x - startX) * 2; // scroll speed multiplier
-  autoScroll.scrollLeft = scrollLeft - walk;
-});
+autoScroll();
 
-// -------- MOBILE TOUCH EVENTS --------
-let touchStartX = 0;
-let touchScrollLeft = 0;
+// ---------------------- DRAG / SWIPE ----------------------
+function startDrag(xPos) {
+  isDragging = true;
+  startX = xPos - autoScrollContainer.offsetLeft;
+  scrollLeft = autoScrollContainer.scrollLeft;
+}
 
-autoScroll.addEventListener('touchstart', (e) => {
-  touchStartX = e.touches[0].pageX - autoScroll.offsetLeft;
-  touchScrollLeft = autoScroll.scrollLeft;
-});
+function moveDrag(xPos) {
+  if (!isDragging) return;
+  const walk = (xPos - startX); 
+  autoScrollContainer.scrollLeft = scrollLeft - walk;
+  // Update velocity dynamically based on swipe speed
+  velocity = Math.min(Math.abs(walk) / 5, 20); // max speed cap
+}
 
-autoScroll.addEventListener('touchmove', (e) => {
-  e.preventDefault();
-  const x = e.touches[0].pageX - autoScroll.offsetLeft;
-  const walk = (x - touchStartX) * 2; // same speed multiplier
-  autoScroll.scrollLeft = touchScrollLeft - walk;
-});
+function endDrag() {
+  isDragging = false;
+}
+
+// Mouse events
+autoScrollContainer.addEventListener('mousedown', (e) => startDrag(e.pageX));
+autoScrollContainer.addEventListener('mousemove', (e) => moveDrag(e.pageX));
+autoScrollContainer.addEventListener('mouseup', endDrag);
+autoScrollContainer.addEventListener('mouseleave', endDrag);
+
+// Touch events
+autoScrollContainer.addEventListener('touchstart', (e) => startDrag(e.touches[0].pageX));
+autoScrollContainer.addEventListener('touchmove', (e) => moveDrag(e.touches[0].pageX));
+autoScrollContainer.addEventListener('touchend', endDrag);
