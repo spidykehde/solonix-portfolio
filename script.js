@@ -20,7 +20,7 @@ function type() {
   heroName.textContent = text.slice(0, index);
   index++;
   if(index > text.length) index = 0;
-  setTimeout(type, 150); // slowed down
+  setTimeout(type, 150);
 }
 
 type();
@@ -40,57 +40,49 @@ let isDragging = false;
 let startX;
 let scrollLeft;
 
-// Function to auto-scroll smoothly
+const NORMAL_SPEED = 1; // default auto-scroll speed
+let currentSpeed = NORMAL_SPEED;
+
+// Auto-scroll function
 function autoScroll() {
   if (!isDragging) {
-    autoScrollContainer.scrollLeft += 1; // speed
-    // Loop back when reaching the end of original items
+    autoScrollContainer.scrollLeft += currentSpeed;
+    // Loop back
     if (autoScrollContainer.scrollLeft >= autoScrollInner.scrollWidth / 2) {
       autoScrollContainer.scrollLeft = 0;
     }
+    currentSpeed = NORMAL_SPEED; // reset speed after drag
   }
   requestAnimationFrame(autoScroll);
 }
 
 autoScroll();
 
-// Drag functionality
-autoScrollContainer.addEventListener('mousedown', (e) => {
+// ---------------- DRAG / SWIPE ----------------
+function startDrag(xPos) {
   isDragging = true;
-  startX = e.pageX - autoScrollContainer.offsetLeft;
+  startX = xPos - autoScrollContainer.offsetLeft;
   scrollLeft = autoScrollContainer.scrollLeft;
-});
+}
 
-autoScrollContainer.addEventListener('mouseleave', () => {
-  isDragging = false;
-});
-
-autoScrollContainer.addEventListener('mouseup', () => {
-  isDragging = false;
-});
-
-autoScrollContainer.addEventListener('mousemove', (e) => {
-  if(!isDragging) return;
-  e.preventDefault();
-  const x = e.pageX - autoScrollContainer.offsetLeft;
-  const walk = (x - startX) * 2; // scroll speed on drag
+function moveDrag(xPos) {
+  if (!isDragging) return;
+  const walk = xPos - startX;
   autoScrollContainer.scrollLeft = scrollLeft - walk;
-});
+}
 
-// Touch events for mobile
-autoScrollContainer.addEventListener('touchstart', (e) => {
-  isDragging = true;
-  startX = e.touches[0].pageX - autoScrollContainer.offsetLeft;
-  scrollLeft = autoScrollContainer.scrollLeft;
-});
-
-autoScrollContainer.addEventListener('touchend', () => {
+function endDrag() {
   isDragging = false;
-});
+  currentSpeed = NORMAL_SPEED; // reset auto-scroll speed immediately
+}
 
-autoScrollContainer.addEventListener('touchmove', (e) => {
-  if(!isDragging) return;
-  const x = e.touches[0].pageX - autoScrollContainer.offsetLeft;
-  const walk = (x - startX) * 2; // scroll-fast
-  autoScrollContainer.scrollLeft = scrollLeft - walk;
-});
+// Mouse events
+autoScrollContainer.addEventListener('mousedown', (e) => startDrag(e.pageX));
+autoScrollContainer.addEventListener('mousemove', (e) => moveDrag(e.pageX));
+autoScrollContainer.addEventListener('mouseup', endDrag);
+autoScrollContainer.addEventListener('mouseleave', endDrag);
+
+// Touch events
+autoScrollContainer.addEventListener('touchstart', (e) => startDrag(e.touches[0].pageX));
+autoScrollContainer.addEventListener('touchmove', (e) => moveDrag(e.touches[0].pageX));
+autoScrollContainer.addEventListener('touchend', endDrag);
